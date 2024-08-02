@@ -9,46 +9,35 @@ import Footer from '../../components/Footer';
 
 Modal.setAppElement('#root');
 
-const ManageDoctors = () => {
-  const [doctors, setDoctors] = useState([]);
-  const [filteredDoctors, setFilteredDoctors] = useState([]);
+const ManageNurses = () => {
+  const [nurses, setNurses] = useState([]);
+  const [filteredNurses, setFilteredNurses] = useState([]);
   const [form, setForm] = useState({ firstName: '', lastName: '', email: '', contactInfo: '' });
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  const [editDoctorId, setEditDoctorId] = useState(null);
+  const [editNurseId, setEditNurseId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const [totalDoctors, setTotalDoctors] = useState(0);
 
   const ITEMS_PER_PAGE = 10;
 
   useEffect(() => {
-    fetchDoctors();
-    fetchTotalDoctors();
+    fetchNurses();
   }, []);
 
   useEffect(() => {
     handleSearch(searchTerm);
-  }, [searchTerm, doctors]);
+  }, [searchTerm, nurses]);
 
-  const fetchDoctors = async () => {
+  const fetchNurses = async () => {
     try {
-      const response = await apiClient.get('/doctor/all');
-      setDoctors(response.data);
-      setFilteredDoctors(response.data);
+      const response = await apiClient.get('/nurse/all');
+      setNurses(response.data);
+      setFilteredNurses(response.data);
       setTotalPages(Math.ceil(response.data.length / ITEMS_PER_PAGE));
     } catch (error) {
-      console.error('Error fetching doctors', error);
-    }
-  };
-
-  const fetchTotalDoctors = async () => {
-    try {
-      const response = await apiClient.get('/doctor/total');
-      setTotalDoctors(response.data.total);
-    } catch (error) {
-      console.error('Error fetching total doctors', error);
+      console.error('Error fetching nurses', error);
     }
   };
 
@@ -61,14 +50,14 @@ const ManageDoctors = () => {
     e.preventDefault();
     try {
       if (editMode) {
-        await apiClient.put(`/doctor/update/${editDoctorId}`, form);
+        await apiClient.put(`/nurse/update/${editNurseId}`, form);
       } else {
-        await apiClient.post('/doctor/create', form);
+        await apiClient.post('/nurse/create', form);
       }
-      fetchDoctors();
+      fetchNurses();
       closeModal();
     } catch (error) {
-      console.error(editMode ? 'Error updating doctor' : 'Error adding doctor', error);
+      console.error(editMode ? 'Error updating nurse' : 'Error adding nurse', error);
     }
   };
 
@@ -82,24 +71,24 @@ const ManageDoctors = () => {
     setForm({ firstName: '', lastName: '', email: '', contactInfo: '' });
   };
 
-  const handleEdit = (doctor) => {
+  const handleEdit = (nurse) => {
     setForm({
-      firstName: doctor.firstName,
-      lastName: doctor.lastName,
-      email: doctor.email,
-      contactInfo: doctor.contactInfo,
+      firstName: nurse.firstName,
+      lastName: nurse.lastName,
+      email: nurse.email,
+      contactInfo: nurse.contactInfo,
     });
-    setEditDoctorId(doctor.id);
+    setEditNurseId(nurse.id);
     setEditMode(true);
     openModal();
   };
 
-  const handleDelete = async (doctorId) => {
+  const handleDelete = async (nurseId) => {
     try {
-      await apiClient.delete(`/doctor/delete/${doctorId}`);
-      fetchDoctors();
+      await apiClient.delete(`/nurse/delete/${nurseId}`);
+      fetchNurses();
     } catch (error) {
-      console.error('Error deleting doctor', error);
+      console.error('Error deleting nurse', error);
     }
   };
 
@@ -109,18 +98,18 @@ const ManageDoctors = () => {
 
   const handleSearch = (term) => {
     setSearchTerm(term);
-    const filtered = doctors.filter(
-      (doctor) =>
-        doctor.firstName.toLowerCase().includes(term.toLowerCase()) ||
-        doctor.lastName.toLowerCase().includes(term.toLowerCase()) ||
-        doctor.email.toLowerCase().includes(term.toLowerCase())
+    const filtered = nurses.filter(
+      (nurse) =>
+        nurse.firstName.toLowerCase().includes(term.toLowerCase()) ||
+        nurse.lastName.toLowerCase().includes(term.toLowerCase()) ||
+        nurse.email.toLowerCase().includes(term.toLowerCase())
     );
-    setFilteredDoctors(filtered);
+    setFilteredNurses(filtered);
     setTotalPages(Math.ceil(filtered.length / ITEMS_PER_PAGE));
     setCurrentPage(1);
   };
 
-  const currentDoctors = filteredDoctors.slice(
+  const currentNurses = filteredNurses.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
@@ -132,23 +121,18 @@ const ManageDoctors = () => {
         <SideBar userType="admin" />
         <main className="flex-1 p-4">
           <div className="bg-white shadow-md rounded-lg p-6">
-            <h1 className="text-2xl font-bold mb-4">Manage Doctors</h1>
+            <h1 className="text-2xl font-bold mb-4">Manage Nurses</h1>
+            <p className="mb-4 text-gray-600">A list of all the nurses in your account including their name, email, and contact info.</p>
             <div className="flex justify-between items-center mb-4">
-              <div>
-                <p className="mb-2 text-gray-600">Total Doctors</p>
-                <div className="bg-blue-500 text-white rounded p-4 text-center text-2xl font-bold">
-                  {totalDoctors}
-                </div>
-              </div>
               <input
                 type="text"
-                placeholder="Search doctors..."
+                placeholder="Search nurses..."
                 value={searchTerm}
                 onChange={(e) => handleSearch(e.target.value)}
                 className="w-1/3 p-2 border rounded"
               />
               <button onClick={openModal} className="px-4 py-2 bg-blue-500 text-white rounded">
-                Add New Doctor
+                Add New Nurse
               </button>
             </div>
             <div className="overflow-x-auto">
@@ -163,21 +147,21 @@ const ManageDoctors = () => {
                   </tr>
                 </thead>
                 <tbody className="text-gray-700">
-                  {currentDoctors.map((doctor) => (
-                    <tr key={doctor.id} className="border-b">
-                      <td className="px-6 py-4">{doctor.firstName}</td>
-                      <td className="px-6 py-4">{doctor.lastName}</td>
-                      <td className="px-6 py-4">{doctor.email}</td>
-                      <td className="px-6 py-4">{doctor.contactInfo}</td>
+                  {currentNurses.map((nurse) => (
+                    <tr key={nurse.id} className="border-b">
+                      <td className="px-6 py-4">{nurse.firstName}</td>
+                      <td className="px-6 py-4">{nurse.lastName}</td>
+                      <td className="px-6 py-4">{nurse.email}</td>
+                      <td className="px-6 py-4">{nurse.contactInfo}</td>
                       <td className="px-6 py-4 text-right">
                         <button
-                          onClick={() => handleEdit(doctor)}
+                          onClick={() => handleEdit(nurse)}
                           className="text-blue-500 hover:text-blue-700 mr-2"
                         >
                           <FaEdit />
                         </button>
                         <button
-                          onClick={() => handleDelete(doctor.id)}
+                          onClick={() => handleDelete(nurse.id)}
                           className="text-red-500 hover:text-red-700"
                         >
                           <FaTrash />
@@ -197,11 +181,11 @@ const ManageDoctors = () => {
           <Modal
             isOpen={modalIsOpen}
             onRequestClose={closeModal}
-            contentLabel="Add Doctor"
+            contentLabel="Add Nurse"
             className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50"
           >
             <div className="bg-white p-8 rounded shadow-lg max-w-md w-full">
-              <h2 className="text-xl font-bold mb-4">{editMode ? 'Edit Doctor' : 'Add Doctor'}</h2>
+              <h2 className="text-xl font-bold mb-4">{editMode ? 'Edit Nurse' : 'Add Nurse'}</h2>
               <form onSubmit={handleSubmit}>
                 <input
                   type="text"
@@ -236,7 +220,7 @@ const ManageDoctors = () => {
                   className="w-full p-2 mb-4 border rounded"
                 />
                 <button type="submit" className="w-full p-2 bg-blue-500 text-white rounded">
-                  {editMode ? 'Update Doctor' : 'Add Doctor'}
+                  {editMode ? 'Update Nurse' : 'Add Nurse'}
                 </button>
                 <button
                   type="button"
@@ -255,4 +239,4 @@ const ManageDoctors = () => {
   );
 };
 
-export default ManageDoctors;
+export default ManageNurses;

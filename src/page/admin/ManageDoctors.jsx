@@ -19,13 +19,11 @@ const ManageDoctors = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const [totalDoctors, setTotalDoctors] = useState(0);
 
   const ITEMS_PER_PAGE = 10;
 
   useEffect(() => {
     fetchDoctors();
-    fetchTotalDoctors();
   }, []);
 
   useEffect(() => {
@@ -40,15 +38,6 @@ const ManageDoctors = () => {
       setTotalPages(Math.ceil(response.data.length / ITEMS_PER_PAGE));
     } catch (error) {
       console.error('Error fetching doctors', error);
-    }
-  };
-
-  const fetchTotalDoctors = async () => {
-    try {
-      const response = await apiClient.get('/doctor/total');
-      setTotalDoctors(response.data.total);
-    } catch (error) {
-      console.error('Error fetching total doctors', error);
     }
   };
 
@@ -133,13 +122,8 @@ const ManageDoctors = () => {
         <main className="flex-1 p-4">
           <div className="bg-white shadow-md rounded-lg p-6">
             <h1 className="text-2xl font-bold mb-4">Manage Doctors</h1>
+            <p className="mb-4 text-gray-600">A list of all the doctors in your account including their name, email, and contact info.</p>
             <div className="flex justify-between items-center mb-4">
-              <div>
-                <p className="mb-2 text-gray-600">Total Doctors</p>
-                <div className="bg-blue-500 text-white rounded p-4 text-center text-2xl font-bold">
-                  {totalDoctors}
-                </div>
-              </div>
               <input
                 type="text"
                 placeholder="Search doctors..."

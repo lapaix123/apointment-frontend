@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { loginUser } from '../apiService';  // Ensure the import path is correct
+import { loginUser } from '../apiService'; 
 
 const Login = () => {
   const [email, setEmail] = useState('');
