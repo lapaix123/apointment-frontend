@@ -7,6 +7,13 @@ import AdminDashboard from './page/admin/AdminDashboard';
 import ManageDoctors from './page/admin/ManageDoctors';
 import ManageNurses from './page/admin/ManageNurses';
 import ManageUsers from './page/admin/ManageUsers';
+
+import RegisterPatient from './page/nurse/RegisterPatient';
+import RegisterAppointment from './page/nurse/RegisterAppointment';
+import SetAvailability from './page/doctor/SetAvailability';
+import ViewAppointments from './page/doctor/ViewAppointments';
+import ViewDoctorAvailability from './page/nurse/ViewDoctorAvailability';
+import ScheduleAppointment from './page/nurse/ScheduleAppointment';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 function App() {
@@ -22,6 +29,12 @@ function App() {
         <Route path="/manage-doctors" element={<ManageDoctors />} />
         <Route path="/manage-nurses" element={<ManageNurses />} />
         <Route path="/manage-users" element={<ManageUsers />} />
+        <Route path="/register-patients" element={<RegisterPatient />} />        
+        <Route path="/register-appointment" element={<RegisterAppointment />}/>
+        <Route path="/set-availability" element={<SetAvailability />} />
+        <Route path="/view-appointments" element={<ViewAppointments />} />
+        <Route path="/view-doctor-availability" component={ViewDoctorAvailability} />
+        <Route path="/schedule-appointment" component={ScheduleAppointment} />
       </Routes>
     </BrowserRouter>
   );

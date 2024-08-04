@@ -9,6 +9,7 @@ const apiClient = axios.create({
 
 // Appointment API
 export const getAppointments = () => apiClient.get('/appointments/all');
+export const getAppointmentsTotal = () => apiClient.get('/appointments/total');
 export const getAppointmentById = (id) => apiClient.get(`/appointments/${id}`);
 export const createAppointment = (appointment) => apiClient.post('/appointments/create', appointment);
 export const updateAppointment = (id, appointment) => apiClient.put(`/appointments/update/${id}`, appointment);
@@ -55,5 +56,9 @@ export const deleteUser = (id) => apiClient.delete(`/users/delete/${id}`);
 export const loginUser = (email, password) => apiClient.post('/users/login', { email, password });
 export const getCurrentUser = () => apiClient.get('/users/current');
 export const logoutUser = () => apiClient.post('/users/logout');
+
+//availability API
+export const createAvailability = (availability) => apiClient.post('/doctor-availability/set', availability);
+export const getAvailability = (doctorId) => apiClient.get(`/doctor-availability/get/${doctorId}`);
 
 export default apiClient;
